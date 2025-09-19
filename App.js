@@ -1,9 +1,19 @@
-import Principal from "./src/Pages/Principal";
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-function App() {
+import Principal from "./src/Pages/Principal";
+import Inicio from "./src/Pages/Inicio";
+
+const Stack = createNativeStackNavigator();
+
+export default function App() {
   return (
-    <Principal />
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Principal">
+        <Stack.Screen name="Principal" component={Principal} />
+        <Stack.Screen name="Inicio" component={Inicio} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-export default App;

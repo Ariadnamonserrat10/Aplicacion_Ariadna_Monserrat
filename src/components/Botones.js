@@ -1,9 +1,15 @@
-import { StyleSheet, Text, TouchableOpacity} from 'react-native'
+import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
+import { useNavigation } from '@react-navigation/native'
 
 export default function Botones() {
+    const navigation = useNavigation();
+
     return (
-        <TouchableOpacity style={styles.btnI}>
+        <TouchableOpacity 
+            style={styles.btnI} 
+            onPress={() => navigation.navigate("Inicio")}
+        >
             <Text style={styles.btnT}>Iniciar</Text>
         </TouchableOpacity>
     )
