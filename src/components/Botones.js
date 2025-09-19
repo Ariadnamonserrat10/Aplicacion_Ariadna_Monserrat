@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-export default function Principal() {
+export default function Botones() {
   return (
     <View style={styles.container}>
-      <Text>Principal</Text>
+      <Text>Botones</Text>
     </View>
   )
 }
@@ -13,7 +13,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#a83f3fff'
+        alignItems: 'center'
     },
 })
