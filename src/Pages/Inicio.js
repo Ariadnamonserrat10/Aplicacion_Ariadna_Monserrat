@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Platform, StatusBar, TouchableOpacity } from 'r
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import Cardinfo from '../components/Cardinfo';
+import NavVar from '../components/NavBar';
 
 // Contexto y reducer para el color de fondo
 const ColorContext = createContext();
@@ -30,7 +31,28 @@ function BotonCambiarColor() {
 
 const Inicio = () => {
   const navigation = useNavigation();
-  const [state, dispatch] = useReducer(reducer, { color: '#cfaecfff' });
+  const [state, dispatch] = useReducer(reducer, { color: '#ffffffff' });
+
+  // Función para manejar la navegación desde el navbar 
+  const handleNavigation = (itemId) => {
+    switch(itemId) {
+      case 'home':
+        //mostrar mensaje
+        console.log('Inicio');
+        break;
+      case 'search':
+        navigation.navigate('Buscar'); 
+        break;
+      case 'user':
+        navigation.navigate('Perfil');
+        break;
+      case 'gear':
+        navigation.navigate('Configuracion');
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <ColorContext.Provider value={{ state, dispatch }}>
@@ -45,35 +67,19 @@ const Inicio = () => {
           <View style={{ width: 20 }} />
         </View>
 
-        {/* Botón justo debajo del AppBar */}
+        {/* Botón cambio de color*/}
         <View style={styles.actionContainer}>
           <BotonCambiarColor />
         </View>
 
         {/* Card info */}
-        <View style={{ marginTop: 20 }}>
+        <View style={{ marginTop: 20, marginBottom: 100 }}>
           <Cardinfo />
         </View>
 
         {/* Navbar */}
-        <View style={styles.navbar}>
-          <View style={styles.navItem}>
-            <FontAwesome name="home" size={20} color="#000" />
-            <Text style={styles.navText}>Inicio</Text>
-          </View>
-          <View style={styles.navItem}>
-            <FontAwesome name="search" size={20} />
-            <Text style={styles.navText}>Buscar</Text>
-          </View>
-          <View style={styles.navItem}>
-            <FontAwesome name="user" size={20} />
-            <Text style={styles.navText}>Perfil</Text>
-          </View>
-          <View style={styles.navItem}>
-            <FontAwesome name="gear" size={20} />
-            <Text style={styles.navText}>Configuración</Text>
-          </View>
-        </View>
+        <NavVar onNavigate={handleNavigation} />
+
       </View>
     </ColorContext.Provider>
   );
@@ -105,30 +111,10 @@ const styles = StyleSheet.create({
   actionContainer: {
     paddingHorizontal: 16,
     marginTop: 10,
-    alignSelf: 'flex-start', // lo hace alineado a la izquierda
-  },
-  navbar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 70,
-    backgroundColor: '#ffffffff',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    borderTopWidth: 0.3,
-  },
-  navItem: {
-    alignItems: 'center',
-  },
-  navText: {
-    fontSize: 12,
-    color: '#58113bff',
-    marginTop: 4,
+    alignSelf: 'flex-start', 
   },
   colorButton: {
-    backgroundColor: '#6b104dff',
+    backgroundColor: '#100a5cff',
     padding: 10,
     borderRadius: 10,
   },
