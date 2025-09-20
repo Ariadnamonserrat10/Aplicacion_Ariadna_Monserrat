@@ -19,11 +19,11 @@ const styles = StyleSheet.create({
     btnI: {
         width: 200,
         padding: 10,
-        backgroundColor: '#6b104dff',
+        backgroundColor: '#2640b6ff',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 50,
-        marginTop:'50%',
+        marginTop:'25%',
     },
     btnT: {
         color: '#fff',  
