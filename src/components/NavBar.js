@@ -32,7 +32,7 @@ const NavBar = ({ onNavigate }) => {
         setIsExpanded(false);
         animation.setValue(0);
 
-        // Llamar función de navegación si se proporciona
+        // Llama la función de navegación 
         if (onNavigate) {
             onNavigate(itemId);
         }
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     },
     mainButtonText: {
         color: '#fff',
-        fontSize: 11,
+        fontSize: 15,
         fontWeight: '600',
         marginLeft: 5,
     },
@@ -164,9 +164,9 @@ const styles = StyleSheet.create({
     navButton: {
         backgroundColor: '#fff',
         width: 100,
-        height: 36,
+        height: 40,
         borderRadius: 18,
-        flexDirection: 'row',
+        // flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         paddingHorizontal: 10,
@@ -184,10 +184,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#241158ff',
     },
     navText: {
-        fontSize: 10,
+        fontSize: 14,
         fontWeight: '500',
         marginLeft: 5,
-        color: '#111658ff',
+        color: '#4a50a5ff',
     },
     selectedText: {
         color: '#fff',

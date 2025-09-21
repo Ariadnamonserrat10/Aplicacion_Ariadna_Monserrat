@@ -1,125 +1,129 @@
-import React, { useReducer, createContext, useContext } from 'react';
-import { StyleSheet, View, Text, Platform, StatusBar, TouchableOpacity } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import Cardinfo from '../components/Cardinfo';
-import NavVar from '../components/NavBar';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-// Contexto y reducer para el color de fondo
-const ColorContext = createContext();
-const reducer = (state, action) => {
-  switch(action.type){
-    case 'CAMBIAR_COLOR':
-      return { color: '#' + Math.floor(Math.random()*16777215).toString(16) };
-    default:
-      return state;
-  }
-}
 
-// Botón para cambiar color usando context
-function BotonCambiarColor() {
-  const { dispatch } = useContext(ColorContext);
-  return (
-    <TouchableOpacity 
-      style={styles.colorButton} 
-      onPress={() => dispatch({ type: 'CAMBIAR_COLOR' })}
-    >
-      <Text style={styles.colorButtonText}>Cambiar Fondo</Text>
-    </TouchableOpacity>
-  );
-}
+export default function Inicio() {
+  const [rol, setRol] = useState('Alumno'); // Alumno o Docente
 
-const Inicio = () => {
-  const navigation = useNavigation();
-  const [state, dispatch] = useReducer(reducer, { color: '#ffffffff' });
-
-  // Función para manejar la navegación desde el navbar 
-  const handleNavigation = (itemId) => {
-    switch(itemId) {
-      case 'home':
-        //mostrar mensaje
-        console.log('Inicio');
-        break;
-      case 'search':
-        navigation.navigate('Buscar'); 
-        break;
-      case 'user':
-        navigation.navigate('Perfil');
-        break;
-      case 'gear':
-        navigation.navigate('Configuracion');
-        break;
-      default:
-        break;
-    }
+  const handleLogin = () => {
+    console.log('Rol seleccionado:', rol);
   };
 
   return (
-    <ColorContext.Provider value={{ state, dispatch }}>
-      <View style={[styles.main, { backgroundColor: state.color }]}>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.card}>
+        <Text style={styles.title}>Inicio de Sesión</Text>
 
-        {/* AppBar */}
-        <View style={styles.appBar}>
-          <TouchableOpacity onPress={() => navigation.navigate("Principal")}>
-            <FontAwesome name="arrow-left" size={20} color="#000" />
+        {/* Selección de rol */}
+        <View style={styles.rolContainer}>
+          <TouchableOpacity 
+            style={[styles.rolButton, rol === 'Alumno' && styles.rolSelected]} 
+            onPress={() => setRol('Alumno')}
+          >
+            <Text style={styles.rolText}>Alumno</Text>
           </TouchableOpacity>
-          <Text style={styles.title}>Ariadna</Text>
-          <View style={{ width: 20 }} />
+          <TouchableOpacity 
+            style={[styles.rolButton, rol === 'Docente' && styles.rolSelected]} 
+            onPress={() => setRol('Docente')}
+          >
+            <Text style={styles.rolText}>Docente</Text>
+          </TouchableOpacity>
         </View>
 
-        {/* Botón cambio de color*/}
-        <View style={styles.actionContainer}>
-          <BotonCambiarColor />
-        </View>
+        {/* Campos de usuario y contraseña */}
+        <Text style={styles.label}>Usuario:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Ingrese su usuario"
+        />
+        <Text style={styles.label}>Contraseña:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="*********"
+          secureTextEntry
+        />
 
-        {/* Card info */}
-        <View style={{ marginTop: 20, marginBottom: 100 }}>
-          <Cardinfo />
-        </View>
-
-        {/* Navbar */}
-        <NavVar onNavigate={handleNavigation} />
-
+        {/* Botón de inicio */}
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+          <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
+        </TouchableOpacity>
       </View>
-    </ColorContext.Provider>
+    </SafeAreaView>
   );
-};
-
-export default Inicio;
+}
 
 const styles = StyleSheet.create({
-  main: {
+  container: {
     flex: 1,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 44,
-  },
-  appBar: {
-    height: 50,
-    width: '100%',
-    backgroundColor: '#ffffffff',
-    flexDirection: 'row',
+    backgroundColor: '#e6f0ff',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  card: {
+    width: '90%',
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 8,
   },
   title: {
-    fontFamily: 'cursive',
-    fontSize: 20,
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#000000',
+    color: '#003366',
+    marginBottom: 20,
     textAlign: 'center',
   },
-  actionContainer: {
-    paddingHorizontal: 16,
-    marginTop: 10,
-    alignSelf: 'flex-start', 
+  label: {
+    fontSize: 16,
+    color: '#003366',
+    fontWeight: '600',
+    marginBottom: 5,
+    marginTop: 15,
   },
-  colorButton: {
-    backgroundColor: '#100a5cff',
-    padding: 10,
-    borderRadius: 10,
+  rolContainer: {
+    flexDirection: 'row',
+    marginBottom: 10,
   },
-  colorButtonText: {
-    color: '#fff',
+  rolButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 25,
+    borderRadius: 8,
+    backgroundColor: '#99c2ff',
+    marginHorizontal: 10,
+  },
+  rolSelected: {
+    backgroundColor: '#3366ff',
+  },
+  rolText: {
+    color: '#ffffff',
     fontWeight: 'bold',
+    fontSize: 16,
+  },
+  input: {
+    width: '100%',
+    height: 50,
+    backgroundColor: '#cce0ff',
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    color: '#003366',
+    fontSize: 16,
+  },
+  loginButton: {
+    marginTop: 25,
+    backgroundColor: '#3366ff',
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  loginButtonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: 18,
   },
 });
