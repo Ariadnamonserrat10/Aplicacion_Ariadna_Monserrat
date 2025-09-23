@@ -5,8 +5,7 @@ import Botones from '../components/Botones'
 export default function Principal() {
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Welcome</Text>
-            <Image style={styles.img} source={{ uri: 'https://images.freeimages.com/image/previews/8dc/blue-flax-blossom-watercolor-png-art-5702406.png' }} />
+            <Image style={styles.img} source={{ uri: 'https://cafeteriaestacion.es/wp-content/uploads/2024/10/cropped-logo_cafeteriaestacion_transp-01.png' }} />
             <View style={styles.circuloSup} />
             <View style={styles.circuloInf} />
             <Botones />
@@ -21,26 +20,17 @@ const styles = StyleSheet.create({
         paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 44,
         alignItems: 'center',
     },
-    title: {
-        fontFamily: 'cursive',
-        color: '#000000ff',
-        fontSize: 70,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginTop: '30%',
-    },
     img: {
-        width: 200,
-        height: 180,
+        width: 280,
+        height: 290,
         marginBottom: 20,
-        marginTop: '15%',
-        opacity: 0.3,
+        marginTop: '50%',
     },
     circuloSup: {
         width: 300,
         height: 300,
         borderRadius: 150,
-        backgroundColor: '#1c2c5fff',
+        backgroundColor: '#ffa947ff',
         position: 'absolute',
         top: -150,
         right: -150,
@@ -51,7 +41,7 @@ const styles = StyleSheet.create({
         width: 300,
         height: 330,
         borderRadius: '80%',
-        backgroundColor: '#1c2c5fff',
+        backgroundColor: '#ffa947ff',
         position: 'absolute',
         bottom: -150,
         left: -150,

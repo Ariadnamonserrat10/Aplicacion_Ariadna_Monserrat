@@ -1,120 +1,141 @@
-// components/FloatingNavbar.js - Versión Centrada
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Animated, StyleSheet } from 'react-native';
+// components/NavBar.js - Con animación de selección elevada
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
 const NavBar = ({ onNavigate }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
     const [selectedItem, setSelectedItem] = useState('home');
-    const [animation] = useState(new Animated.Value(0));
+    const animatedValues = useRef({});
 
     const navItems = [
-        { id: 'home', icon: 'home', label: 'Inicio' },
-        { id: 'search', icon: 'search', label: 'Buscar' },
-        { id: 'user', icon: 'user', label: 'Perfil' },
-        { id: 'gear', icon: 'gear', label: 'Configuración' },
+        { id: 'home', icon: 'home', label: 'Home' },
+        { id: 'search', icon: 'search', label: 'Search' },
+        { id: 'gift', icon: 'gift', label: 'Gift' },
+        { id: 'cart', icon: 'shopping-cart', label: 'Cart' },
+        { id: 'user', icon: 'user', label: 'Profile' },
     ];
 
-    const toggleMenu = () => {
-        const toValue = isExpanded ? 0 : 1;
-
-        Animated.timing(animation, {
-            toValue,
-            duration: 200,
-            useNativeDriver: false,
-        }).start();
-
-        setIsExpanded(!isExpanded);
-    };
+    // Inicializar valores animados para cada item
+    useEffect(() => {
+        navItems.forEach(item => {
+            if (!animatedValues.current[item.id]) {
+                animatedValues.current[item.id] = new Animated.Value(item.id === selectedItem ? 1 : 0);
+            }
+        });
+    }, []);
 
     const selectItem = (itemId) => {
-        setSelectedItem(itemId);
-        setIsExpanded(false);
-        animation.setValue(0);
+        if (selectedItem !== itemId) {
+            // Animar el item anterior hacia abajo
+            if (animatedValues.current[selectedItem]) {
+                Animated.timing(animatedValues.current[selectedItem], {
+                    toValue: 0,
+                    duration: 300,
+                    useNativeDriver: false,
+                }).start();
+            }
 
-        // Llama la función de navegación 
+            // Animar el nuevo item hacia arriba
+            if (animatedValues.current[itemId]) {
+                Animated.timing(animatedValues.current[itemId], {
+                    toValue: 1,
+                    duration: 300,
+                    useNativeDriver: false,
+                }).start();
+            }
+
+            setSelectedItem(itemId);
+        }
+
         if (onNavigate) {
             onNavigate(itemId);
         }
     };
 
-    const getSelectedItem = () => {
-        return navItems.find(item => item.id === selectedItem) || navItems[0];
-    };
-
-    const renderExpandedItems = () => {
-        if (!isExpanded) return null;
-
+    const renderNavItems = () => {
         return navItems.map((item, index) => {
-            const translateY = animation.interpolate({
+            const isSelected = selectedItem === item.id;
+            const animatedValue = animatedValues.current[item.id] || new Animated.Value(0);
+
+            // Interpolaciones para la animación
+            const translateY = animatedValue.interpolate({
                 inputRange: [0, 1],
-                outputRange: [0, -(50 * (index + 1))],
+                outputRange: [0, -25], // Se mueve hacia arriba
             });
 
-            const opacity = animation.interpolate({
-                inputRange: [0, 0.3, 1],
-                outputRange: [0, 0, 1],
+            const circleScale = animatedValue.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 1], // El círculo aparece/desaparece
+            });
+
+            const circleOpacity = animatedValue.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 1],
             });
 
             return (
-                <Animated.View
+                <TouchableOpacity
                     key={item.id}
-                    style={[
-                        styles.expandedItem,
-                        {
-                            transform: [{ translateY }],
-                            opacity,
-                        }
-                    ]}
+                    style={styles.navButton}
+                    onPress={() => selectItem(item.id)}
+                    activeOpacity={0.8}
                 >
-                    <TouchableOpacity
+                    {/* Círculo elevado - solo visible cuando está seleccionado */}
+                    <Animated.View
                         style={[
-                            styles.navButton,
-                            selectedItem === item.id && styles.selectedButton
+                            styles.elevatedCircle,
+                            {
+                                transform: [
+                                    { translateY },
+                                    { scale: circleScale }
+                                ],
+                                opacity: circleOpacity,
+                            }
                         ]}
-                        onPress={() => selectItem(item.id)}
+                    >
+                        <View style={styles.purpleCircle}>
+                            <FontAwesome
+                                name={item.icon}
+                                size={18}
+                                color="#fff"
+                            />
+                        </View>
+                        <Text style={styles.elevatedText}>
+                            {item.label}
+                        </Text>
+                    </Animated.View>
+
+                    {/* Contenedor del ícono normal */}
+                    <Animated.View
+                        style={[
+                            styles.iconContainer,
+                            {
+                                opacity: animatedValue.interpolate({
+                                    inputRange: [0, 1],
+                                    outputRange: [1, 0], // Se desvanece cuando está seleccionado
+                                })
+                            }
+                        ]}
                     >
                         <FontAwesome
                             name={item.icon}
                             size={16}
-                            color={selectedItem === item.id ? "#fff" : "#321158ff"}
+                            color="#8B4513"
                         />
-                        <Text style={[
-                            styles.navText,
-                            selectedItem === item.id && styles.selectedText
-                        ]}>
+                        <Text style={styles.navText}>
                             {item.label}
                         </Text>
-                    </TouchableOpacity>
-                </Animated.View>
+                    </Animated.View>
+                </TouchableOpacity>
             );
         });
     };
 
     return (
         <View style={styles.container}>
-            {/* Elementos expandidos */}
-            {renderExpandedItems()}
-
-            {/* Botón principal */}
-            <TouchableOpacity
-                style={[
-                    styles.mainButton,
-                    isExpanded && styles.expandedMainButton
-                ]}
-                onPress={toggleMenu}
-            >
-                <FontAwesome
-                    name={isExpanded ? "times" : getSelectedItem().icon}
-                    size={18}
-                    color="#fff"
-                />
-                {!isExpanded && (
-                    <Text style={styles.mainButtonText}>
-                        {getSelectedItem().label}
-                    </Text>
-                )}
-            </TouchableOpacity>
+            <View style={styles.navContainer}>
+                {renderNavItems()}
+            </View>
         </View>
     );
 };
@@ -122,22 +143,59 @@ const NavBar = ({ onNavigate }) => {
 const styles = StyleSheet.create({
     container: {
         position: 'absolute',
-        bottom: 15,
-        left: 0,
-        right: 0,
+        bottom: 20,
+        left: 20,
+        right: 20,
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 1000,
     },
-    mainButton: {
-        backgroundColor: '#1c1158ff',
-        width: 100,
-        height: 40,
-        borderRadius: 20,
+    navContainer: {
         flexDirection: 'row',
+        backgroundColor: '#8D6E63', // Marrón medio
+        borderRadius: 25,
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 10,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        minWidth: 320,
+        height: 60,
+    },
+    navButton: {
         alignItems: 'center',
         justifyContent: 'center',
-        paddingHorizontal: 10,
+        flex: 1,
+        height: 60,
+        position: 'relative',
+    },
+    iconContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 8,
+    },
+    elevatedCircle: {
+        position: 'absolute',
+        alignItems: 'center',
+        justifyContent: 'center',
+        top: -30, // Posición elevada
+        zIndex: 10,
+    },
+    purpleCircle: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        backgroundColor: '#6A4C93', // Color morado/café
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 4,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -145,52 +203,20 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.3,
         shadowRadius: 4,
-        elevation: 6,
+        elevation: 8,
     },
-    expandedMainButton: {
-        width: 40,
-        backgroundColor: '#3045ffff',
-    },
-    mainButtonText: {
-        color: '#fff',
-        fontSize: 15,
+    elevatedText: {
+        fontSize: 11,
         fontWeight: '600',
-        marginLeft: 5,
-    },
-    expandedItem: {
-        position: 'absolute',
-        bottom: 0,
-    },
-    navButton: {
-        backgroundColor: '#fff',
-        width: 100,
-        height: 40,
-        borderRadius: 18,
-        // flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingHorizontal: 10,
-        marginBottom: 4,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3,
-        elevation: 4,
-    },
-    selectedButton: {
-        backgroundColor: '#241158ff',
+        color: '#6A4C93',
+        textAlign: 'center',
     },
     navText: {
-        fontSize: 14,
+        fontSize: 10,
         fontWeight: '500',
-        marginLeft: 5,
-        color: '#4a50a5ff',
-    },
-    selectedText: {
-        color: '#fff',
+        color: '#4E342E',
+        textAlign: 'center',
+        marginTop: 2,
     },
 });
 
