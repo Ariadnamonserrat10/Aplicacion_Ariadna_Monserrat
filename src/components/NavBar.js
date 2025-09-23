@@ -1,74 +1,49 @@
-// components/NavBar.js - Versión optimizada para mejor rendimiento
+// components/NavBar.js
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
-const NavBar = ({ onNavigate }) => {
+const NavBar = () => {
+    const navigation = useNavigation();
     const [selectedItem, setSelectedItem] = useState('home');
-    const [animating, setAnimating] = useState(false);
 
     const navItems = [
-        { id: 'menu', icon: 'cutlery', label: 'Menu' },
-        { id: 'inventory', icon: 'archive', label: 'Inventario' },
-        { id: 'home', icon: 'home', label: 'Home' },
-        { id: 'categories', icon: 'sitemap', label: 'Categorias' },
-        { id: 'settings', icon: 'cog', label: 'Configuracion' },
+        { id: 'menu', icon: 'cutlery', label: 'Menu', route: 'Menu' },
+        { id: 'inventory', icon: 'archive', label: 'Inventario', route: 'Inventario' },
+        { id: 'home', icon: 'home', label: 'Home', route: 'Pantalla2' },
+        { id: 'categories', icon: 'sitemap', label: 'Categorias', route: 'Categoria' },
+        { id: 'settings', icon: 'cog', label: 'Configuracion', route: 'Configuracion' },
     ];
 
-    const selectItem = (itemId) => {
-        if (selectedItem !== itemId && !animating) {
-            setAnimating(true);
-            setSelectedItem(itemId);
-            
-            // Resetear el flag después de la animación
-            setTimeout(() => {
-                setAnimating(false);
-            }, 200);
-
-            if (onNavigate) {
-                onNavigate(itemId);
-            }
-        }
+    // Función para seleccionar el item y navegar
+    const selectItem = (item) => {
+        setSelectedItem(item.id);       // Actualiza el icono seleccionado
+        navigation.navigate(item.route); // Navega a la pantalla correspondiente
     };
 
     const renderNavItems = () => {
-        return navItems.map((item, index) => {
+        return navItems.map((item) => {
             const isSelected = selectedItem === item.id;
 
             return (
-                <TouchableOpacity 
-                    key={item.id} 
-                    style={styles.navButton} 
-                    onPress={() => selectItem(item.id)} 
+                <TouchableOpacity
+                    key={item.id}
+                    style={styles.navButton}
+                    onPress={() => selectItem(item)}
                     activeOpacity={0.8}
                 >
-                    {/* Círculo elevado - solo visible cuando está seleccionado */}
-                    {isSelected && (
+                    {isSelected ? (
                         <View style={styles.elevatedCircle}>
                             <View style={styles.purpleCircle}>
-                                <FontAwesome
-                                    name={item.icon}
-                                    size={18}
-                                    color="#fff"
-                                />
+                                <FontAwesome name={item.icon} size={18} color="#fff" />
                             </View>
-                            <Text style={styles.elevatedText}>
-                                {item.label}
-                            </Text>
+                            <Text style={styles.elevatedText}>{item.label}</Text>
                         </View>
-                    )}
-
-                    {/* Contenedor del ícono normal - solo visible cuando NO está seleccionado */}
-                    {!isSelected && (
+                    ) : (
                         <View style={styles.iconContainer}>
-                            <FontAwesome
-                                name={item.icon}
-                                size={16}
-                                color="#8B4513"
-                            />
-                            <Text style={styles.navText}>
-                                {item.label}
-                            </Text>
+                            <FontAwesome name={item.icon} size={16} color="#8B4513" />
+                            <Text style={styles.navText}>{item.label}</Text>
                         </View>
                     )}
                 </TouchableOpacity>
@@ -102,10 +77,7 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         paddingHorizontal: 20,
         shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
+        shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
         elevation: 10,
@@ -142,10 +114,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginBottom: 4,
         shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 3,
-        },
+        shadowOffset: { width: 0, height: 3 },
         shadowOpacity: 0.3,
         shadowRadius: 4,
         elevation: 8,

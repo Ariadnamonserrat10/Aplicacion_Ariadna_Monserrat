@@ -1,19 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import NavBar from '../components/NavBar';
-import Categoria from '../components/Categorias';
 import CardInfo from '../components/Cardinfo';
 
 export default function Pantalla2() {
-  const categorias = [
-    { id: 1, nombre: 'Bebidas calientes', imagen: 'https://i.pinimg.com/736x/bb/f9/b1/bbf9b105eea8ba8d93548b34d1c21055.jpg' },
-    { id: 2, nombre: 'Bebidas Frias', imagen: 'https://i.pinimg.com/736x/35/32/ca/3532ca198f8a6b74e9d11a1890bdf0fe.jpg' },
-    { id: 3, nombre: 'Postres', imagen: 'https://i.pinimg.com/1200x/1e/d3/ae/1ed3aefb51f1221c12836c16686fbdb9.jpg' },
-    { id: 4, nombre: 'Banderillas', imagen: 'https://i.pinimg.com/736x/05/42/34/054234392c66fb1246dbff5fdaac5004.jpg' },
-    { id: 5, nombre: 'Pasteles', imagen: 'https://i.pinimg.com/736x/ef/74/46/ef7446f8afcdff724ebca09e01eca06e.jpg' },
-    { id: 6, nombre: 'Sandwich', imagen: 'https://i.pinimg.com/1200x/01/0c/b0/010cb090073f035fa373185818c839f4.jpg' },
-  ];
-
   const populares = [
     {
       id: 1,
@@ -50,9 +40,6 @@ export default function Pantalla2() {
           style={styles.imagenPrincipal}
         />
 
-        <Text style={styles.seccionTitulo}>Categorías</Text>
-        <Categoria categorias={categorias} />
-
         <Text style={styles.seccionTitulo}>Cafés Populares</Text>
         {populares.map(cafe => (
           <CardInfo key={cafe.id} cafe={cafe} />
@@ -67,31 +54,26 @@ export default function Pantalla2() {
 }
 
 const styles = StyleSheet.create({
-  wrapper:
-  {
+  wrapper: {
     flex: 1
   },
-  container:
-  {
+  container: {
     flex: 1,
     backgroundColor: '#fff8e7'
   },
-  imagenPrincipal:
-  {
+  imagenPrincipal: {
     width: '100%',
     height: 220,
     marginBottom: 15
   },
-  seccionTitulo:
-  {
+  seccionTitulo: {
     fontSize: 22,
     fontWeight: 'bold',
     color: '#4e342e',
     marginLeft: 15,
     marginBottom: 10
   },
-  bottomSpacing:
-  {
+  bottomSpacing: {
     height: 100
   }
 });
