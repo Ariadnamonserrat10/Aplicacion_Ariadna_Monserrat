@@ -5,12 +5,12 @@ import NavBar from '../components/NavBar';
 export default function Pantalla2() {
   // Categorías
   const categorias = [
-    { id: 1, nombre: 'Espresso', imagen: 'https://i.pinimg.com/736x/bb/f9/b1/bbf9b105eea8ba8d93548b34d1c21055.jpg' },
-    { id: 2, nombre: 'Capuccino', imagen: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Cappuccino_at_Sightglass_Coffee.jpg' },
-    { id: 3, nombre: 'Latte', imagen: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Caffe_Latte_at_Pulse_Coffee.JPG' },
-    { id: 4, nombre: 'Mocha', imagen: 'https://upload.wikimedia.org/wikipedia/commons/f/f6/Mocha_coffee.jpg' },
-    { id: 5, nombre: 'Americano', imagen: 'https://upload.wikimedia.org/wikipedia/commons/4/48/Americano_coffee.jpg' },
-    { id: 6, nombre: 'Macchiato', imagen: 'https://upload.wikimedia.org/wikipedia/commons/0/00/Macchiato_coffee.jpg' },
+    { id: 1, nombre: 'Bebidas calientes', imagen: 'https://i.pinimg.com/736x/bb/f9/b1/bbf9b105eea8ba8d93548b34d1c21055.jpg' },
+    { id: 2, nombre: 'Bebidas Frias', imagen: 'https://i.pinimg.com/736x/35/32/ca/3532ca198f8a6b74e9d11a1890bdf0fe.jpg' },
+    { id: 3, nombre: 'Postres', imagen: 'https://i.pinimg.com/1200x/1e/d3/ae/1ed3aefb51f1221c12836c16686fbdb9.jpg' },
+    { id: 4, nombre: 'Banderillas', imagen: 'https://i.pinimg.com/736x/05/42/34/054234392c66fb1246dbff5fdaac5004.jpg' },
+    { id: 5, nombre: 'Pasteles', imagen: 'https://i.pinimg.com/736x/ef/74/46/ef7446f8afcdff724ebca09e01eca06e.jpg' },
+    { id: 6, nombre: 'Sandwich', imagen: 'https://i.pinimg.com/1200x/01/0c/b0/010cb090073f035fa373185818c839f4.jpg' },
   ];
 
   // Cafés más populares
@@ -27,14 +27,14 @@ export default function Pantalla2() {
       nombre: "Capuccino",
       descripcion: "Con espuma de leche cremosa",
       ventas: 18,
-      imagen: "https://upload.wikimedia.org/wikipedia/commons/c/c8/Cappuccino_at_Sightglass_Coffee.jpg"
+      imagen: "https://i.pinimg.com/736x/b3/02/07/b3020720caef3e806115c550dc77ce03.jpg"
     },
     {
       id: 3,
       nombre: "Latte",
       descripcion: "Suave con leche vaporizada",
       ventas: 32,
-      imagen: "https://upload.wikimedia.org/wikipedia/commons/7/7c/Caffe_Latte_at_Pulse_Coffee.JPG"
+      imagen: "https://i.pinimg.com/1200x/c4/73/7e/c4737e013a673e196416210867f9b1f8.jpg"
     }
   ];
 
