@@ -18,8 +18,8 @@ const NavBar = () => {
 
     // Función para seleccionar el item y navegar
     const selectItem = (item) => {
-        setSelectedItem(item.id);       // Actualiza el icono seleccionado
-        navigation.navigate(item.route); // Navega a la pantalla correspondiente
+        setSelectedItem(item.id);       
+        navigation.navigate(item.route); 
     };
 
     const renderNavItems = () => {

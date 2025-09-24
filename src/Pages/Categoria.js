@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity } from 
 import NavBar from '../components/NavBar';
 
 export default function Categoria() {
-  // Datos de ejemplo para mostrar en el diseño
+
   const categorias = [
     { id: '1', nombre: 'Bebidas calientes' },
     { id: '2', nombre: 'Bebidas frías' },
@@ -24,6 +24,7 @@ export default function Categoria() {
       <View style={styles.addContainer}>
         <TextInput placeholder="Nombre de la categoría" style={styles.input} />
         <TextInput placeholder="Descripción" style={styles.input} />
+        <TextInput placeholder="URL de la imagen" style={styles.input} keyboardType="url"/>
         <TouchableOpacity style={styles.addButton}>
           <Text style={styles.addButtonText}>Agregar</Text>
         </TouchableOpacity>

@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity } from 
 import NavBar from '../components/NavBar';
 
 export default function Inventario() {
-  // Datos de ejemplo para mostrar en el diseño
+
   const items = [
     { id: '1', nombre: 'Café', cantidad: 10 },
     { id: '2', nombre: 'Té', cantidad: 5 },
@@ -27,6 +27,7 @@ export default function Inventario() {
         <TextInput placeholder="Nombre del producto" style={styles.input} />
         <TextInput placeholder="Descripción" style={styles.input} />
         <TextInput placeholder="Cantidad" style={styles.input} keyboardType="numeric" />
+        <TextInput placeholder="URL de la imagen" style={styles.input} keyboardType="url"/>
         <TouchableOpacity style={styles.addButton}>
           <Text style={styles.addButtonText}>Agregar</Text>
         </TouchableOpacity>
