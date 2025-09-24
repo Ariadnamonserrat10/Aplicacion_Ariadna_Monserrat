@@ -5,14 +5,18 @@ const { testConnection } = require('./Config/Database');
 const app = express();
 const PORT = 3001;
 
+// Middlewares
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.json({ message: 'API funcionando' });
-});
+// Probar conexión
+testConnection();
 
-app.listen(PORT, async () => {
+// Rutas → monta el router
+const inventarioRoutes = require('./Routers/Inventario');
+app.use('/inventario', inventarioRoutes);
+
+// Arrancar servidor
+app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-  await testConnection();
 });

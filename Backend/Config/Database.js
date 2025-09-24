@@ -1,6 +1,5 @@
 const mysql = require('mysql2/promise');
 
-// Tu configuración convertida a Node.js
 const dbConfig = {
   host: 'localhost',           
   port: 3306,                  
