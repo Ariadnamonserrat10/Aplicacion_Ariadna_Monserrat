@@ -18,6 +18,12 @@ export default function Inicio() {
           placeholder="Ingrese su usuario"
           placeholderTextColor="#a67c52"
         />
+        <Text style={styles.label}>Carreo:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Ingrese su Correo"
+          placeholderTextColor="#a67c52"
+        />
         <Text style={styles.label}>Contraseña:</Text>
         <TextInput
           style={styles.input}
