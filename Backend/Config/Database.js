@@ -13,14 +13,14 @@ const dbConfig = {
 
 const pool = mysql.createPool(dbConfig);
 
-// Función para probar conexión (equivalente a show-sql)
+// Función para probar conexión 
 const testConnection = async () => {
   try {
     const connection = await pool.getConnection();
-    console.log('✅ Conectado a cafeteria_db como root');
+    console.log('Conectado a cafeteria_db como root');
     connection.release();
   } catch (error) {
-    console.error('❌ Error:', error.message);
+    console.error(' Error:', error.message);
   }
 };
 
