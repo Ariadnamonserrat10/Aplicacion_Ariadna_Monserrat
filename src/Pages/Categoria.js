@@ -1,60 +1,132 @@
-// src/Pages/Categoria.js
-import React from 'react';
-import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Text, View, ScrollView, TextInput, TouchableOpacity, Image, Alert, StyleSheet} from 'react-native';
+import axios from 'axios';
+import * as ImagePicker from 'expo-image-picker';
 import NavBar from '../components/NavBar';
 
-export default function Categoria() {
+const API_URL = 'http://192.168.0.107:3001/categorias';
 
-  const categorias = [
-    { id: '1', nombre: 'Bebidas calientes' },
-    { id: '2', nombre: 'Bebidas frías' },
-    { id: '3', nombre: 'Postres' },
-    { id: '4', nombre: 'Sandwiches' },
-    { id: '5', nombre: 'Ensaladas' },
-    { id: '6', nombre: 'Snacks' },
-    { id: '7', nombre: 'Helados' },
-    { id: '8', nombre: 'Panadería' },
-  ];
+export default function Categoria() {
+  const [categorias, setCategorias] = useState([]);
+  const [nombre, setNombre] = useState('');
+  const [descripcion, setDescripcion] = useState('');
+  const [imagen, setImagen] = useState(null);
+  const [busqueda, setBusqueda] = useState('');
+  const [editId, setEditId] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => { fetchCategorias(); }, []);
+
+  const fetchCategorias = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(API_URL);
+      setCategorias(response.data);
+    } catch (error) {
+      console.error('Error obteniendo categorías:', error);
+      Alert.alert('Error', 'No se pudo cargar las categorías');
+    } finally { setLoading(false); }
+  };
+
+  const seleccionarImagen = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permissionResult.granted) return Alert.alert('Permisos requeridos', 'Se necesitan permisos para acceder a la galería');
+
+    const result = await ImagePicker.launchImageLibraryAsync({ allowsEditing: true, aspect: [1,1], quality: 0.7 });
+    if (!result.canceled) setImagen(result.assets[0]);
+  };
+
+  const limpiarFormulario = () => { setNombre(''); setDescripcion(''); setImagen(null); setEditId(null); };
+
+  const handleGuardar = async () => {
+    if (!nombre.trim()) return Alert.alert('Error', 'El nombre es requerido');
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append('nombre', nombre.trim());
+      formData.append('descripcion', descripcion.trim());
+      if (imagen?.uri) {
+        formData.append('imagen', {
+          uri: imagen.uri,
+          type: 'image/jpeg',
+          name: 'categoria.jpg'
+        });
+      }
+
+      if (editId) {
+        await axios.put(`${API_URL}/${editId}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+        Alert.alert('Éxito', 'Categoría actualizada');
+      } else {
+        await axios.post(API_URL, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+        Alert.alert('Éxito', 'Categoría agregada');
+      }
+
+      limpiarFormulario();
+      fetchCategorias();
+    } catch (error) {
+      console.error('Error guardando categoría:', error);
+      Alert.alert('Error', 'No se pudo guardar la categoría');
+    } finally { setLoading(false); }
+  };
+
+  const handleEditar = (categoria) => {
+    setNombre(categoria.nombre);
+    setDescripcion(categoria.descripcion || '');
+    setImagen(categoria.imagen ? { uri: `data:image/jpeg;base64,${categoria.imagen}` } : null);
+    setEditId(categoria.id);
+  };
+
+  const handleEliminar = (id) => {
+    Alert.alert('Confirmar eliminación', '¿Deseas eliminar esta categoría?', [
+      { text: 'Cancelar', style: 'cancel' },
+      { text: 'Eliminar', style: 'destructive', onPress: async () => { await axios.delete(`${API_URL}/${id}`); fetchCategorias(); } }
+    ]);
+  };
+
+  const categoriasFiltradas = categorias.filter(cat => cat.nombre.toLowerCase().includes(busqueda.toLowerCase()));
 
   return (
-    <View style={styles.wrapper}>
-      <Text style={styles.title}>Categorías</Text>
+    <View style={{ flex: 1, padding: 20, paddingTop: 50 }}>
+      <Text style={{ fontSize: 28, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' }}>Categorías</Text>
 
-      {/* Sección de agregar categoría */}
-      <View style={styles.addContainer}>
-        <TextInput placeholder="Nombre de la categoría" style={styles.input} />
-        <TextInput placeholder="Descripción" style={styles.input} />
-        <TextInput placeholder="URL de la imagen" style={styles.input} keyboardType="url"/>
-        <TouchableOpacity style={styles.addButton}>
-          <Text style={styles.addButtonText}>Agregar</Text>
+      <View style={{ marginBottom: 15 }}>
+        <TextInput placeholder="Nombre" value={nombre} onChangeText={setNombre} style={{ borderWidth: 1, padding: 10, marginBottom: 10 }} />
+        <TextInput placeholder="Descripción" value={descripcion} onChangeText={setDescripcion} style={{ borderWidth: 1, padding: 10, marginBottom: 10 }} />
+        <TouchableOpacity onPress={seleccionarImagen} style={{ backgroundColor: '#583506', padding: 12, borderRadius: 8, marginBottom: 10 }}>
+          <Text style={{ color: '#fff' }}>{imagen ? 'Imagen seleccionada' : 'Seleccionar imagen'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleGuardar} style={{ backgroundColor: '#583506', padding: 12, borderRadius: 8 }}>
+          <Text style={{ color: '#fff' }}>{editId ? 'Guardar cambios' : 'Agregar'}</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Barra de búsqueda */}
-      <TextInput placeholder="Buscar categoría..." style={styles.searchInput} />
+      <TextInput placeholder="Buscar..." value={busqueda} onChangeText={setBusqueda} style={{ borderWidth: 1, padding: 10, marginBottom: 15 }} />
 
-      {/* Lista de categorías */}
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {categorias.map(cat => (
-          <View key={cat.id} style={styles.item}>
-            <Text style={styles.itemText}>{cat.nombre}</Text>
-            <View style={styles.buttons}>
-              <TouchableOpacity style={styles.editButton}>
-                <Text style={styles.buttonText}>Editar</Text>
+      <ScrollView>
+        {categoriasFiltradas.map(cat => (
+          <View key={cat.id} style={{ flexDirection: 'row', marginBottom: 10, backgroundColor: '#f5e1c6', padding: 15, borderRadius: 8, alignItems: 'center' }}>
+            {cat.imagen && <Image source={{ uri: `data:image/jpeg;base64,${cat.imagen}` }} style={{ width: 40, height: 40, borderRadius: 20, marginRight: 10 }} />}
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontWeight: '600' }}>{cat.nombre}</Text>
+              <Text>{cat.descripcion}</Text>
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+              <TouchableOpacity onPress={() => handleEditar(cat)} style={{ backgroundColor: '#f0a500', padding: 8, borderRadius: 5, marginRight: 10 }}>
+                <Text style={{ color: '#fff' }}>Editar</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.deleteButton}>
-                <Text style={styles.buttonText}>Eliminar</Text>
+              <TouchableOpacity onPress={() => handleEliminar(cat.id)} style={{ backgroundColor: '#d62828', padding: 8, borderRadius: 5 }}>
+                <Text style={{ color: '#fff' }}>Eliminar</Text>
               </TouchableOpacity>
             </View>
           </View>
         ))}
       </ScrollView>
 
-      {/* NavBar */}
       <NavBar />
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   wrapper: {

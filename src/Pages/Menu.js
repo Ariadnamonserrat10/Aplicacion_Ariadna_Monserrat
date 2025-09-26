@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, FlatList, ScrollView } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { StyleSheet, Text, View, TextInput, Image, FlatList, TouchableWithoutFeedback, Animated } from 'react-native';
 import NavBar from '../components/NavBar';
 import Categoria from '../components/Categorias';
 
@@ -23,18 +23,56 @@ export default function Menu() {
     { id: 5, nombre: 'Caramel Latte', tipo: 'Café', precio: 75, imagen: 'https://i.pinimg.com/1200x/c4/73/7e/c4737e013a673e196416210867f9b1f8.jpg', categoriaId: 1 },
   ];
 
-  const renderCafe = ({ item }) => (
-    <TouchableOpacity style={styles.card}>
-      <Image source={{ uri: item.imagen }} style={styles.cardImage} />
-      <Text style={styles.cardNombre}>{item.nombre}</Text>
-      <Text style={styles.cardTipo}>{item.tipo}</Text>
-      <Text style={styles.cardPrecio}>${item.precio}</Text>
-    </TouchableOpacity>
-  );
-
   const cafesFiltrados = categoriaSeleccionada
     ? cafes.filter(cafe => cafe.categoriaId === categoriaSeleccionada)
     : cafes;
+
+  // Componente para cada tarjeta con animación flip
+  const CardFlip = ({ item }) => {
+    const [flipped, setFlipped] = useState(false);
+    const animatedValue = useRef(new Animated.Value(0)).current;
+
+    const frontInterpolate = animatedValue.interpolate({
+      inputRange: [0, 180],
+      outputRange: ['0deg', '180deg'],
+    });
+
+    const backInterpolate = animatedValue.interpolate({
+      inputRange: [0, 180],
+      outputRange: ['180deg', '360deg'],
+    });
+
+    const flipCard = () => {
+      Animated.spring(animatedValue, {
+        toValue: flipped ? 0 : 180,
+        friction: 8,
+        tension: 10,
+        useNativeDriver: true,
+      }).start();
+      setFlipped(!flipped);
+    };
+
+    return (
+      <TouchableWithoutFeedback onPress={flipCard}>
+        <View style={styles.cardContainer}>
+          <Animated.View style={[styles.card, { transform: [{ rotateY: frontInterpolate }] }]}>
+            <Image source={{ uri: item.imagen }} style={styles.cardImage} />
+            <Text style={styles.cardNombre}>{item.nombre}</Text>
+            <Text style={styles.cardTipo}>{item.tipo}</Text>
+            <Text style={styles.cardPrecio}>${item.precio}</Text>
+          </Animated.View>
+
+          <Animated.View style={[styles.card, styles.cardBack, { transform: [{ rotateY: backInterpolate }] }]}>
+            <Text style={styles.cardNombre}>Detalles</Text>
+            <Text style={styles.cardTipo}>Categoría: {categorias.find(cat => cat.id === item.categoriaId)?.nombre}</Text>
+            <Text style={styles.cardPrecio}>Stock: 20</Text>
+          </Animated.View>
+        </View>
+      </TouchableWithoutFeedback>
+    );
+  };
+
+  const renderCafe = ({ item }) => <CardFlip item={item} />;
 
   return (
     <View style={styles.wrapper}>
@@ -47,18 +85,15 @@ export default function Menu() {
         contentContainerStyle={{ paddingBottom: 120 }}
         ListHeaderComponent={
           <>
-            {/* Search bar */}
             <View style={styles.searchContainer}>
               <TextInput placeholder="Buscar" style={styles.searchInput} />
             </View>
 
-            {/* Categorías con imágenes */}
             <Categoria categorias={categorias} onSelect={setCategoriaSeleccionada} />
           </>
         }
       />
 
-      {/* NavBar */}
       <NavBar />
     </View>
   );
@@ -89,17 +124,32 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     paddingHorizontal: 15,
   },
-  card: {
-    backgroundColor: '#fff3e0',
+  cardContainer: {
     flex: 0.48,
+    height: 230,
+    marginBottom: 15,
+    perspective: 1000, // necesario para 3D
+  },
+  card: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#fff3e0',
     borderRadius: 15,
     padding: 10,
     alignItems: 'center',
+    justifyContent: 'center',
+    backfaceVisibility: 'hidden',
     shadowColor: '#000',
     shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 3 },
     shadowRadius: 4,
     elevation: 4,
+  },
+  cardBack: {
+    backgroundColor: '#ffe0b2',
+    position: 'absolute',
+    top: 0,
   },
   cardImage: {
     width: 100,

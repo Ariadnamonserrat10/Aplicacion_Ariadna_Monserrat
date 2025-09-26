@@ -5,7 +5,7 @@ import NavBar from '../components/NavBar';
 import axios from 'axios';
 
 // URL de la API
-const API_URL = 'http://192.168.0.100:3001/inventario';
+const API_URL = 'http://192.168.0.107:3001/inventario';
 
 export default function Inventario() {
   const [items, setItems] = useState([]);
