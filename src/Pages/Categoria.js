@@ -4,7 +4,7 @@ import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import NavBar from '../components/NavBar';
 
-const API_URL = 'http://192.168.0.107:3001/categorias';
+const API_URL = 'http://10.176.146.46:3001/categorias';
 
 export default function Categoria() {
   const [categorias, setCategorias] = useState([]);

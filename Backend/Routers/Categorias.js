@@ -3,7 +3,6 @@ const router = express.Router();
 const multer = require('multer');
 const { pool } = require('../Config/Database'); 
 
-// Configuración de multer para manejar archivos en memoria
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 

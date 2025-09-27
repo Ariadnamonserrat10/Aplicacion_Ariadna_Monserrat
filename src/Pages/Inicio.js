@@ -20,7 +20,7 @@ export default function Inicio() {
 
     try {
       setLoading(true);
-      const response = await axios.post('http://192.168.0.107:3001/usuarios/login', {
+      const response = await axios.post('http://10.176.146.46:3001/usuarios/login', {
         nombre,
         email,
         password

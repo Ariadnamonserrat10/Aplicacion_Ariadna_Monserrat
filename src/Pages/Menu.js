@@ -27,7 +27,7 @@ export default function Menu() {
     ? cafes.filter(cafe => cafe.categoriaId === categoriaSeleccionada)
     : cafes;
 
-  // Componente para cada tarjeta con animación flip
+  // animación flip
   const CardFlip = ({ item }) => {
     const [flipped, setFlipped] = useState(false);
     const animatedValue = useRef(new Animated.Value(0)).current;
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     flex: 0.48,
     height: 230,
     marginBottom: 15,
-    perspective: 1000, // necesario para 3D
+    perspective: 1000, 
   },
   card: {
     position: 'absolute',

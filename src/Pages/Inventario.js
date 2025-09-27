@@ -5,7 +5,7 @@ import NavBar from '../components/NavBar';
 import axios from 'axios';
 
 // URL de la API
-const API_URL = 'http://192.168.0.107:3001/inventario';
+const API_URL = 'http://10.176.146.46:3001/inventario';
 
 export default function Inventario() {
   const [items, setItems] = useState([]);
@@ -46,7 +46,7 @@ export default function Inventario() {
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.7,
-      base64: true, // importante para enviar base64
+      base64: true, 
     });
 
     if (!result.canceled) {
